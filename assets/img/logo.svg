@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Willy Auto Perfection Centre">
+  <defs>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eaf4ff"/>
+      <stop offset=".38" stop-color="#8dc3ff"/>
+      <stop offset=".52" stop-color="#2b7bf2"/>
+      <stop offset=".72" stop-color="#57a2ff"/>
+      <stop offset="1" stop-color="#cfe4ff"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8dc3ff"/>
+      <stop offset=".5" stop-color="#1259d6"/>
+      <stop offset="1" stop-color="#8dc3ff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".38" r=".62">
+      <stop offset="0" stop-color="#17346e"/>
+      <stop offset="1" stop-color="#04091a"/>
+    </radialGradient>
+  </defs>
+
+  <!-- dark blue background -->
+  <rect width="512" height="512" rx="104" fill="#071026"/>
+  <circle cx="256" cy="256" r="216" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="212" fill="none" stroke="url(#ring)" stroke-width="7"/>
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#123064" stroke-width="2"/>
+
+  <!-- W monogram -->
+  <path d="M104 120h54l30 128 32-128h36l32 128 30-128h54l-58 210h-52l-30-116-30 116h-52z"
+        fill="url(#chrome)" stroke="#0a1733" stroke-width="4" stroke-linejoin="round"/>
+
+  <!-- road -->
+  <path d="M96 392h320" stroke="#123064" stroke-width="10" stroke-linecap="round"/>
+  <path d="M150 392h48M230 392h52M314 392h48" stroke="#57a2ff" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- car silhouette -->
+  <g transform="translate(96 300)">
+    <path d="M18 62c-8 0-14-6-14-14l2-18c1-9 7-16 15-18l38-9 30-21c7-5 15-8 24-8h56c11 0 21 5 28 13l22 25 40 8c11 2 19 12 19 23v5c0 8-6 14-14 14z"
+          fill="#1a4a9c"/>
+    <path d="M110 12h48c6 0 12 3 16 8l16 20h-80zM60 21l28-9h12v28H44z" fill="#8dc3ff" opacity=".85"/>
+    <circle cx="82" cy="60" r="21" fill="#04091a"/><circle cx="82" cy="60" r="9" fill="#8dc3ff"/>
+    <circle cx="232" cy="60" r="21" fill="#04091a"/><circle cx="232" cy="60" r="9" fill="#8dc3ff"/>
+  </g>
+
+  <!-- shine -->
+  <path d="M372 148l9 24 24 9-24 9-9 24-9-24-24-9 24-9z" fill="#cfe4ff" opacity=".9"/>
+</svg>

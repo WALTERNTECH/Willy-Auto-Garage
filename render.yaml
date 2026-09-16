@@ -1,0 +1,27 @@
+# Render blueprint — https://render.com/docs/blueprint-spec
+# Static site: no build step, the repository root is published as-is.
+services:
+  - type: web
+    runtime: static
+    name: willy-auto-garage
+    plan: free
+    buildCommand: ""
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400
+    routes:
+      - type: rewrite
+        source: /index.html
+        destination: /
