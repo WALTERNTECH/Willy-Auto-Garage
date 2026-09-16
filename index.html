@@ -926,9 +926,20 @@
           </div>
         </div>
       </div>
-      <div class="map">
-        <iframe title="Map to Willy Auto Perfection Centre" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                src="https://maps.google.com/maps?q=Nairobi%2C%20Kenya&amp;z=12&amp;output=embed"></iframe>
+      <div class="map-wrap">
+        <div class="map">
+          <div class="map__fallback">
+            <svg aria-hidden="true"><use href="#i-pin"></use></svg>
+            <b>Willy Auto Perfection Centre</b>
+            <span>Nairobi, Kenya</span>
+          </div>
+          <iframe title="Map to Willy Auto Perfection Centre" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                  src="https://maps.google.com/maps?q=Nairobi%2C%20Kenya&amp;z=12&amp;output=embed"></iframe>
+        </div>
+        <a class="map__link" href="https://www.google.com/maps/search/?api=1&amp;query=Willy+Auto+Perfection+Centre+Nairobi"
+           target="_blank" rel="noopener">
+          Get directions to the workshop <svg aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+        </a>
       </div>
     </div>
   </div>

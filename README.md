@@ -67,7 +67,7 @@ Search `index.html` for these and replace with the real values:
 | What | Currently | Where |
 |---|---|---|
 | Street address | `Nairobi, Kenya` | Contact section + JSON-LD at the top of `index.html` |
-| Google Map pin | a general Nairobi map | the `<iframe>` in the Contact section |
+| Google Map pin | a general Nairobi map | the `<iframe>` and the "Get directions" link in the Contact section |
 | Opening hours | Mon–Fri 8–6, Sat 8–5, Sun closed | Top bar, Contact section, footer, JSON-LD |
 | Stats | 10+ years, 2,500+ cars, 4.9/5 | "Willy Auto at a glance" section |
 | Reviews | three sample customer stories | Reviews section |
