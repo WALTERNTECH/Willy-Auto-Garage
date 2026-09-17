@@ -17,6 +17,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
+<script>
+/* Photos come from Supabase Storage. If one is not there yet, fall back to a
+   copy committed in this repo, and only then show the empty placeholder. */
+function willyImgError(img){
+  var fallback = img.getAttribute('data-fallback');
+  if (fallback) { img.removeAttribute('data-fallback'); img.src = fallback; return; }
+  img.onerror = null;
+  var slide = img.closest('.slide');
+  if (slide) { slide.remove(); return; }   // a missing slide leaves no gap
+  img.classList.add('is-missing');
+}
+</script>
 <link rel="stylesheet" href="assets/css/styles.css">
 <script type="application/ld+json">
 {
@@ -186,22 +198,22 @@
       <div class="slider__viewport">
         <div class="slider__track" id="sliderTrack">
           <figure class="slide">
-            <img src="assets/img/hero/slide-1.jpg" alt="Willy Auto Perfection Centre workshop 1"
-                 decoding="async" onerror="this.onerror=null;this.closest('.slide').remove()">
+            <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/hero/slide-1.jpg" data-fallback="assets/img/hero/slide-1.jpg" alt="Willy Auto Perfection Centre workshop 1"
+                 decoding="async" onerror="willyImgError(this)">
           </figure>
           <figure class="slide">
-            <img src="assets/img/hero/slide-2.jpg" alt="Willy Auto Perfection Centre workshop 2"
-                 decoding="async" onerror="this.onerror=null;this.closest('.slide').remove()">
+            <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/hero/slide-2.jpg" data-fallback="assets/img/hero/slide-2.jpg" alt="Willy Auto Perfection Centre workshop 2"
+                 decoding="async" onerror="willyImgError(this)">
           </figure>
           <figure class="slide">
-            <img src="assets/img/hero/slide-3.jpg" alt="Willy Auto Perfection Centre workshop 3"
-                 decoding="async" onerror="this.onerror=null;this.closest('.slide').remove()">
+            <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/hero/slide-3.jpg" data-fallback="assets/img/hero/slide-3.jpg" alt="Willy Auto Perfection Centre workshop 3"
+                 decoding="async" onerror="willyImgError(this)">
           </figure>
         </div>
         <div class="slider__empty" id="sliderEmpty" hidden>
           <svg aria-hidden="true"><use href="#i-image"></use></svg>
           <b>Workshop photos go here</b>
-          <span>Add them from the staff page &mdash; <code>assets/img/hero/slide-1.jpg</code> to <code>slide-3.jpg</code></span>
+          <span>Staff can add them from the staff page &mdash; they appear here straight away.</span>
         </div>
       </div>
       <button class="slider__nav is-prev" type="button" id="sliderPrev" aria-label="Previous photo" hidden>
@@ -321,14 +333,14 @@
         <div class="ba" role="group" aria-label="Spray Painting: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/spray-painting-before.jpg" alt="Spray Painting before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/spray-painting-before.jpg" data-fallback="assets/img/services/spray-painting-before.jpg" alt="Spray Painting before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>spray-painting-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/spray-painting-after.jpg" alt="Spray Painting after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/spray-painting-after.jpg" data-fallback="assets/img/services/spray-painting-after.jpg" alt="Spray Painting after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>spray-painting-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -353,14 +365,14 @@
         <div class="ba" role="group" aria-label="Car Buffing and Polishing: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/car-buffing-before.jpg" alt="Car Buffing and Polishing before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/car-buffing-before.jpg" data-fallback="assets/img/services/car-buffing-before.jpg" alt="Car Buffing and Polishing before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>car-buffing-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/car-buffing-after.jpg" alt="Car Buffing and Polishing after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/car-buffing-after.jpg" data-fallback="assets/img/services/car-buffing-after.jpg" alt="Car Buffing and Polishing after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>car-buffing-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -385,14 +397,14 @@
         <div class="ba" role="group" aria-label="Car Accessories: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/car-accessories-before.jpg" alt="Car Accessories before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/car-accessories-before.jpg" data-fallback="assets/img/services/car-accessories-before.jpg" alt="Car Accessories before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>car-accessories-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/car-accessories-after.jpg" alt="Car Accessories after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/car-accessories-after.jpg" data-fallback="assets/img/services/car-accessories-after.jpg" alt="Car Accessories after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>car-accessories-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -417,14 +429,14 @@
         <div class="ba" role="group" aria-label="Routine Maintenance: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/routine-maintenance-before.jpg" alt="Routine Maintenance before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/routine-maintenance-before.jpg" data-fallback="assets/img/services/routine-maintenance-before.jpg" alt="Routine Maintenance before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>routine-maintenance-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/routine-maintenance-after.jpg" alt="Routine Maintenance after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/routine-maintenance-after.jpg" data-fallback="assets/img/services/routine-maintenance-after.jpg" alt="Routine Maintenance after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>routine-maintenance-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -449,14 +461,14 @@
         <div class="ba" role="group" aria-label="Brake Services: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/brake-services-before.jpg" alt="Brake Services before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/brake-services-before.jpg" data-fallback="assets/img/services/brake-services-before.jpg" alt="Brake Services before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>brake-services-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/brake-services-after.jpg" alt="Brake Services after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/brake-services-after.jpg" data-fallback="assets/img/services/brake-services-after.jpg" alt="Brake Services after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>brake-services-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -481,14 +493,14 @@
         <div class="ba" role="group" aria-label="Air Conditioning and Heating: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/air-conditioning-before.jpg" alt="Air Conditioning and Heating before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/air-conditioning-before.jpg" data-fallback="assets/img/services/air-conditioning-before.jpg" alt="Air Conditioning and Heating before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>air-conditioning-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/air-conditioning-after.jpg" alt="Air Conditioning and Heating after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/air-conditioning-after.jpg" data-fallback="assets/img/services/air-conditioning-after.jpg" alt="Air Conditioning and Heating after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>air-conditioning-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -513,14 +525,14 @@
         <div class="ba" role="group" aria-label="Suspension and Steering: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/suspension-steering-before.jpg" alt="Suspension and Steering before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/suspension-steering-before.jpg" data-fallback="assets/img/services/suspension-steering-before.jpg" alt="Suspension and Steering before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>suspension-steering-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/suspension-steering-after.jpg" alt="Suspension and Steering after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/suspension-steering-after.jpg" data-fallback="assets/img/services/suspension-steering-after.jpg" alt="Suspension and Steering after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>suspension-steering-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -545,14 +557,14 @@
         <div class="ba" role="group" aria-label="Pre-Purchase Inspections: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/pre-purchase-inspection-before.jpg" alt="Pre-Purchase Inspections before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/pre-purchase-inspection-before.jpg" data-fallback="assets/img/services/pre-purchase-inspection-before.jpg" alt="Pre-Purchase Inspections before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>pre-purchase-inspection-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/pre-purchase-inspection-after.jpg" alt="Pre-Purchase Inspections after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/pre-purchase-inspection-after.jpg" data-fallback="assets/img/services/pre-purchase-inspection-after.jpg" alt="Pre-Purchase Inspections after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>pre-purchase-inspection-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -577,14 +589,14 @@
         <div class="ba" role="group" aria-label="Wheel Alignment: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/wheel-alignment-before.jpg" alt="Wheel Alignment before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/wheel-alignment-before.jpg" data-fallback="assets/img/services/wheel-alignment-before.jpg" alt="Wheel Alignment before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>wheel-alignment-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/wheel-alignment-after.jpg" alt="Wheel Alignment after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/wheel-alignment-after.jpg" data-fallback="assets/img/services/wheel-alignment-after.jpg" alt="Wheel Alignment after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>wheel-alignment-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -609,14 +621,14 @@
         <div class="ba" role="group" aria-label="Diagnostic Services: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/diagnostics-before.jpg" alt="Diagnostic Services before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/diagnostics-before.jpg" data-fallback="assets/img/services/diagnostics-before.jpg" alt="Diagnostic Services before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>diagnostics-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/diagnostics-after.jpg" alt="Diagnostic Services after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/diagnostics-after.jpg" data-fallback="assets/img/services/diagnostics-after.jpg" alt="Diagnostic Services after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>diagnostics-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -641,14 +653,14 @@
         <div class="ba" role="group" aria-label="Arc Welding and Fabrication: before and after">
         <figure class="ba__pane ba__pane--before">
           <span class="ba__tag">Before</span>
-          <img src="assets/img/services/arc-welding-before.jpg" alt="Arc Welding and Fabrication before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/arc-welding-before.jpg" data-fallback="assets/img/services/arc-welding-before.jpg" alt="Arc Welding and Fabrication before repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>arc-welding-before.jpg</code></figcaption>
         </figure>
         <figure class="ba__pane ba__pane--after">
           <span class="ba__tag">After</span>
-          <img src="assets/img/services/arc-welding-after.jpg" alt="Arc Welding and Fabrication after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.classList.add('is-missing')">
+          <img src="https://wbduprgcuuxbgsjnixcf.supabase.co/storage/v1/object/public/willy-auto/services/arc-welding-after.jpg" data-fallback="assets/img/services/arc-welding-after.jpg" alt="Arc Welding and Fabrication after repair at Willy Auto Perfection Centre" loading="lazy" decoding="async"
+               onerror="willyImgError(this)">
           <figcaption class="ba__ph"><svg aria-hidden="true"><use href="#i-image"></use></svg><b>Add photo</b><code>arc-welding-after.jpg</code></figcaption>
         </figure>
           <span class="ba__divider" aria-hidden="true"></span>
@@ -1057,6 +1069,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="assets/js/config.js"></script>
 <script src="assets/js/main.js" defer></script>
 </body>
 </html>

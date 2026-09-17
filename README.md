@@ -20,67 +20,63 @@ python3 -m http.server 8000
 
 ---
 
-## 1. The homepage slider
+## 1. Photos
 
-Three wide slots sit at the top of the homepage and slide across automatically. Upload them from
-the staff page (easiest) or drop the files in directly:
+Photos do **not** live in this repository. They live in a Supabase Storage bucket, so staff can add
+them from the staff page and they appear on the site straight away -- no GitHub, no redeploy.
 
-| Slot | File |
+### How staff add a photo
+
+1. Open **/staff.html** (linked as *Staff photo upload* in the footer) on a phone or tablet.
+2. Enter the staff passcode once. The device remembers it.
+3. Pick a photo for any slot. It goes live within about a minute.
+
+There are 25 slots: three for the homepage slider, and a before/after pair for each of the 11
+services. Each photo is cropped to that slot's shape (16:9 at 1600x900 for the slider, 4:3 at
+1200x900 for the service panes), scaled down and compressed in the browser before upload, so a 6 MB
+phone photo arrives as roughly 150 KB.
+
+### Where it goes
+
+| | |
 |---|---|
-| Slide 1 | `assets/img/hero/slide-1.jpg` |
-| Slide 2 | `assets/img/hero/slide-2.jpg` |
-| Slide 3 | `assets/img/hero/slide-3.jpg` |
+| Bucket | `willy-auto` in the **Krypton** Supabase project |
+| Slider | `hero/slide-1.jpg` ... `slide-3.jpg` |
+| Services | `services/<service>-before.jpg` and `-after.jpg` |
+| Upload endpoint | the `willy-auto-upload` edge function |
 
-Landscape shots, ideally **1600 x 900** (16:9) -- the staff page crops and scales to that for you.
-The slider builds itself from whatever loads: two photos gives two slides and two dots, one photo
-gives a still image with no arrows, and none shows a placeholder panel telling you what is missing.
-Slide 3 is optional.
+### How the site finds a photo
 
-## 2. Adding the service photos
+Each `<img>` tries three things in order, so nothing ever shows a broken image:
 
-The before/after panes under each service show a styled placeholder with the exact filename it is
-waiting for. **Drop a photo in at that path and it appears automatically** — no code changes needed.
+1. the bucket copy,
+2. a file committed to `assets/img/...` at the same name (a manual backstop),
+3. the styled placeholder naming the slot.
 
-Save them as `.jpg`, landscape, ideally **1200 × 900** (4:3). Keep each file under ~300 KB so the
-page stays fast; shoot the "before" and "after" from roughly the same angle and distance so the split
-reads properly.
+The slider builds itself from whatever loads: three photos gives three slides, one gives a still
+image with no arrows, none shows a panel pointing staff at the uploader.
 
-| Service | Before photo | After photo |
-|---|---|---|
-| Spray Painting | `assets/img/services/spray-painting-before.jpg` | `assets/img/services/spray-painting-after.jpg` |
-| Car Buffing & Polishing | `assets/img/services/car-buffing-before.jpg` | `assets/img/services/car-buffing-after.jpg` |
-| Car Accessories | `assets/img/services/car-accessories-before.jpg` | `assets/img/services/car-accessories-after.jpg` |
-| Routine Maintenance | `assets/img/services/routine-maintenance-before.jpg` | `assets/img/services/routine-maintenance-after.jpg` |
-| Brake Services | `assets/img/services/brake-services-before.jpg` | `assets/img/services/brake-services-after.jpg` |
-| Air Conditioning & Heating | `assets/img/services/air-conditioning-before.jpg` | `assets/img/services/air-conditioning-after.jpg` |
-| Suspension & Steering | `assets/img/services/suspension-steering-before.jpg` | `assets/img/services/suspension-steering-after.jpg` |
-| Pre-Purchase Inspections | `assets/img/services/pre-purchase-inspection-before.jpg` | `assets/img/services/pre-purchase-inspection-after.jpg` |
-| Wheel Alignment | `assets/img/services/wheel-alignment-before.jpg` | `assets/img/services/wheel-alignment-after.jpg` |
-| Diagnostic Services | `assets/img/services/diagnostics-before.jpg` | `assets/img/services/diagnostics-after.jpg` |
-| Arc Welding & Fabrication | `assets/img/services/arc-welding-before.jpg` | `assets/img/services/arc-welding-after.jpg` |
+## 2. Changing the staff passcode
 
-### The easy way: the staff page
+The passcode is never stored anywhere in this repository. Only its SHA-256 hash is kept, in the
+`public.willy_auto_config` table of the Krypton project, which has row-level security on and no
+policies -- so nothing but the edge function (running as the service role) can read it.
 
-`staff.html` (linked as **Staff photo upload** in the footer) lists all 25 slots -- the three
-homepage slider photos and the before/after pair for each of the 11 services. Pick a photo and the
-page crops it to that slot's shape (16:9 for the slider, 4:3 for the service panes), scales it down
-and compresses it before anything is uploaded -- so a 6 MB phone photo lands as a ~150 KB file with
-the right name.
+To change it, run this in the Krypton SQL editor with your own hash:
 
-Two ways to finish:
+```sql
+-- generate the hash first, e.g.:  echo -n 'NEW-PASSCODE' | sha256sum
+update public.willy_auto_config
+   set value = '<new sha256 hex>', updated_at = now()
+ where key = 'staff_passcode_sha256';
+```
 
-- **Publish straight to the site.** The page needs a GitHub token once per device, saved in that
-  browser only. On GitHub: **Settings -> Developer settings -> Personal access tokens ->
-  Fine-grained tokens**, give it access to `WALTERNTECH/Willy-Auto-Garage` only, set repository
-  permission **Contents: Read and write**, and paste it into the page. The photo is then committed
-  to `assets/img/services/` and goes live on the next deploy.
-- **Download instead.** With no token the page still resizes the photo and downloads it with the
-  correct filename, ready to hand to whoever manages the site.
+The change takes effect within a minute (the function caches the hash briefly). Every device then
+needs the new passcode; staff can clear the old one with **Lock this device** on the staff page.
 
-A note on the token: it is a real credential stored in that browser's localStorage. Put it only on
-a workshop device you control, scope it to this one repository, and use the **Remove** button (or
-revoke it on GitHub) if the device is lost. Anyone who opens `staff.html` without a token can look
-at the page but cannot publish anything.
+A note on what the passcode protects: anyone holding it can replace the photos on the website. It
+cannot read or touch anything else in the Krypton project -- the upload function only accepts paths
+matching the slots above, and only writes to the `willy-auto` bucket.
 
 ## 3. The logo
 
@@ -152,6 +148,8 @@ issued automatically.
 ```
 index.html              the public site — one page, sectioned
 staff.html              internal photo uploader (slider + before/after)
+supabase/
+  willy-auto-upload/    edge function source (deployed to the Krypton project)
 404.html                not-found page
 render.yaml             Render blueprint (static site, no build)
 robots.txt / sitemap.xml
@@ -159,14 +157,15 @@ assets/
   css/styles.css        design tokens + all styling
   css/staff.css         staff page only
   js/main.js            menu, scroll effects, WhatsApp form handoff
+  js/config.js          where photos are served from and uploaded to
   js/services.js        the service list, shared with the staff page
   js/main.js            also runs the homepage slider
-  js/staff.js           photo resize + commit to GitHub
+  js/staff.js           passcode, photo resize, upload
   img/
     logo.svg            placeholder emblem on dark navy
     favicon.svg
-    hero/               homepage slider photos go here
-    services/           before/after photos go here
+    hero/               optional local copies of the slider photos
+    services/           optional local copies of the before/after photos
 scripts/
   recolor-logo.mjs      puts a logo's background on brand dark navy
 ```

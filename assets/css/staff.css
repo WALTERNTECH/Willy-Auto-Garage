@@ -26,8 +26,8 @@
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
   background:var(--wash);border:1px solid var(--line);border-radius:4px;padding:1px 5px;
 }
-.token-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.token-row .field{flex:1 1 280px}
+.passcode-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.passcode-row .field{flex:1 1 280px}
 .steps-list{display:grid;gap:7px;margin:0 0 14px;padding-left:18px;list-style:decimal}
 .steps-list li{font-size:var(--fs-sm);color:var(--muted)}
 

@@ -8,10 +8,8 @@
 (function () {
   'use strict';
 
-  var REPO_OWNER = 'WALTERNTECH';
-  var REPO_NAME = 'Willy-Auto-Garage';
-  var BRANCH = 'main';
-  var TOKEN_KEY = 'willy.staff.github-token';
+  var PHOTOS = window.WILLY_PHOTOS || {};
+  var PASSCODE_KEY = 'willy.staff.passcode';
   var JPEG_QUALITY = 0.82;
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -19,9 +17,9 @@
 
   /* ---------- what can be uploaded ---------- */
   // Homepage slider: wide photos of the workshop.
-  var HERO = { w: 1600, h: 900, ratio: 'wide', dir: 'assets/img/hero' };
+  var HERO = { w: 1600, h: 900, ratio: 'wide', dir: 'hero' };
   // Service panes: 4:3 so every before/after pair lines up.
-  var SERVICE = { w: 1200, h: 900, ratio: 'std', dir: 'assets/img/services' };
+  var SERVICE = { w: 1200, h: 900, ratio: 'std', dir: 'services' };
 
   function heroGroup() {
     var slots = [1, 2, 3].map(function (n) {
@@ -58,25 +56,27 @@
 
   var groups = [heroGroup()].concat(services.map(serviceGroup));
 
-  /* ---------- token, kept on this device only ---------- */
-  function getToken() {
-    try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+  /* ---------- passcode, remembered on this device ---------- */
+  function getPasscode() {
+    try { return localStorage.getItem(PASSCODE_KEY) || ''; } catch (e) { return ''; }
   }
-  function setToken(value) {
+  function setPasscode(value) {
     try {
-      if (value) localStorage.setItem(TOKEN_KEY, value);
-      else localStorage.removeItem(TOKEN_KEY);
+      if (value) localStorage.setItem(PASSCODE_KEY, value);
+      else localStorage.removeItem(PASSCODE_KEY);
       return true;
     } catch (e) { return false; }
   }
 
-  function paintTokenState() {
-    var badge = $('#tokenState');
-    var hasToken = !!getToken();
-    badge.textContent = hasToken ? 'Connected' : 'Not connected';
-    badge.className = 'panel__badge ' + (hasToken ? 'is-ok' : 'is-warn');
-    $('#forgetToken').hidden = !hasToken;
-    $('#tokenInput').placeholder = hasToken ? '•••••••••••• saved on this device' : 'github_pat_…';
+  function paintLockState() {
+    var unlocked = !!getPasscode();
+    var badge = $('#lockState');
+    badge.textContent = unlocked ? 'Unlocked' : 'Locked';
+    badge.className = 'panel__badge ' + (unlocked ? 'is-ok' : 'is-warn');
+    $('#lockBtn').hidden = !unlocked;
+    $('#passcodeRow').hidden = unlocked;
+    $('#lockedNote').hidden = unlocked;
+    document.querySelectorAll('.js-pick').forEach(function (btn) { btn.disabled = !unlocked; });
   }
 
   /* ---------- image handling ---------- */
@@ -120,52 +120,36 @@
     return btoa(binary);
   }
 
-  /* ---------- GitHub ---------- */
-  function apiUrl(path) {
-    return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + path;
-  }
-
-  function ghHeaders(token) {
-    return {
-      Authorization: 'Bearer ' + token,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28'
-    };
-  }
-
-  function describeError(status, body) {
-    if (status === 401) return 'That token was rejected. Paste a fresh one.';
-    if (status === 403) return 'The token is not allowed to write to this repository. It needs Contents: Read and write.';
-    if (status === 404) return 'Repository not found for this token. Check it has access to ' + REPO_OWNER + '/' + REPO_NAME + '.';
-    if (status === 409 || status === 422) return 'The file changed while uploading. Try once more.';
+  /* ---------- the upload service ---------- */
+  function describeError(status, message) {
+    if (status === 401) return 'That passcode is not right.';
     if (status === 413) return 'That photo is too large even after resizing. Try another one.';
-    return 'GitHub returned ' + status + (body && body.message ? ' — ' + body.message : '') + '.';
+    if (status === 503) return 'The photo service is waking up. Try again in a moment.';
+    return message || ('The upload failed (' + status + ').');
   }
 
-  async function commitFile(path, base64, message, token) {
-    var headers = ghHeaders(token);
-
-    // An existing file needs its blob sha to be replaced.
-    var sha;
-    var existing = await fetch(apiUrl(path) + '?ref=' + BRANCH, { headers: headers, cache: 'no-store' });
-    if (existing.ok) {
-      sha = (await existing.json()).sha;
-    } else if (existing.status !== 404) {
-      throw new Error(describeError(existing.status, await existing.json().catch(function () { return null; })));
+  async function callUploader(payload) {
+    var res;
+    try {
+      res = await fetch(PHOTOS.uploadUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      throw new Error('No connection. Check the phone is online and try again.');
     }
+    var body = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(describeError(res.status, body.error));
+    return body;
+  }
 
-    var payload = { message: message, content: base64, branch: BRANCH };
-    if (sha) payload.sha = sha;
+  function verifyPasscode(passcode) {
+    return callUploader({ passcode: passcode, action: 'verify' });
+  }
 
-    var res = await fetch(apiUrl(path), {
-      method: 'PUT',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      throw new Error(describeError(res.status, await res.json().catch(function () { return null; })));
-    }
-    return res.json();
+  function uploadPhoto(path, base64, passcode) {
+    return callUploader({ passcode: passcode, path: path, data: base64 });
   }
 
   /* ---------- building the grid ---------- */
@@ -181,7 +165,7 @@
       '<div class="slot slot--' + slot.ratio + '" data-key="' + slot.key + '" id="slot-' + slot.key + '">' +
         '<div class="slot__label"><span class="slot__dot"></span>' + slot.label + '</div>' +
         '<div class="slot__frame">' +
-          '<img alt="" src="' + slot.path + '" ' +
+          '<img alt="" src="' + PHOTOS.url(slot.path) + '" ' +
                'onerror="this.onerror=null;this.classList.add(\'is-missing\')">' +
           '<span class="slot__empty">' + icon('i-image') + 'No photo yet</span>' +
         '</div>' +
@@ -252,29 +236,16 @@
     $('#reviewTitle').textContent = slot.title;
     $('#reviewMeta').textContent =
       'Saved as ' + slot.file + ' · ' + slot.w + '×' + slot.h + ' · ' + Math.round(blob.size / 1024) + ' KB';
-    $('#publishBtn').hidden = !getToken();
-    $('#publishHint').hidden = !!getToken();
+    $('#publishBtn').hidden = false;
     $('#reviewDialog').showModal();
   }
 
   function closeReview() { $('#reviewDialog').close(); }
 
-  function downloadPending() {
-    if (!pending) return;
-    var a = document.createElement('a');
-    a.href = pending.url;
-    a.download = pending.slot.file;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    status(pending.el, 'Downloaded. Upload it to ' + pending.slot.path.replace(/\/[^/]+$/, '') + ' on GitHub.', 'ok');
-    closeReview();
-  }
-
   async function publishPending() {
     if (!pending) return;
-    var token = getToken();
-    if (!token) return;
+    var passcode = getPasscode();
+    if (!passcode) return;
 
     var el = pending.el;
     var slot = pending.slot;
@@ -286,15 +257,15 @@
 
     try {
       var base64 = toBase64(await blob.arrayBuffer());
-      await commitFile(slot.path, base64, 'Add photo: ' + slot.title, token);
+      var result = await uploadPhoto(slot.path, base64, passcode);
 
-      // Bust the cache so the new photo shows straight away.
+      // Bust the cache so the new photo shows here straight away.
       var img = el.querySelector('img');
       img.classList.remove('is-missing');
-      img.src = slot.path + '?v=' + Date.now();
+      img.src = (result.url || PHOTOS.url(slot.path)) + '?v=' + Date.now();
       el.classList.add('has-photo');
       updateCounts();
-      status(el, 'Published. It appears on the website after the next deploy.', 'ok');
+      status(el, 'Live on the website.', 'ok');
     } catch (err) {
       status(el, err.message, 'error');
     } finally {
@@ -305,24 +276,41 @@
   /* ---------- wiring ---------- */
   function init() {
     render();
-    paintTokenState();
+    paintLockState();
 
-    $('#saveToken').addEventListener('click', function () {
-      var value = $('#tokenInput').value.trim();
-      if (!value) { $('#tokenInput').focus(); return; }
-      if (!setToken(value)) {
-        $('#tokenNote').textContent = 'This browser will not let the page save anything. Try a normal (non-private) window.';
+    var unlockBtn = $('#unlockBtn');
+    unlockBtn.addEventListener('click', async function () {
+      var value = $('#passcodeInput').value.trim();
+      if (!value) { $('#passcodeInput').focus(); return; }
+
+      unlockBtn.disabled = true;
+      $('#lockNote').textContent = 'Checking…';
+      try {
+        await verifyPasscode(value);            // never store a passcode that does not work
+      } catch (err) {
+        $('#lockNote').textContent = err.message;
+        unlockBtn.disabled = false;
         return;
       }
-      $('#tokenInput').value = '';
-      $('#tokenNote').textContent = 'Saved on this device. You can upload photos now.';
-      paintTokenState();
+      unlockBtn.disabled = false;
+
+      if (!setPasscode(value)) {
+        $('#lockNote').textContent = 'This browser will not let the page remember anything. Try a normal (non-private) window.';
+        return;
+      }
+      $('#passcodeInput').value = '';
+      $('#lockNote').textContent = 'Unlocked. Pick a photo for any slot below.';
+      paintLockState();
     });
 
-    $('#forgetToken').addEventListener('click', function () {
-      setToken('');
-      $('#tokenNote').textContent = 'Removed from this device.';
-      paintTokenState();
+    $('#passcodeInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); unlockBtn.click(); }
+    });
+
+    $('#lockBtn').addEventListener('click', function () {
+      setPasscode('');
+      $('#lockNote').textContent = 'Locked again on this device.';
+      paintLockState();
     });
 
     // One delegated listener covers every slot.
@@ -358,7 +346,6 @@
     });
 
     $('#publishBtn').addEventListener('click', publishPending);
-    $('#downloadBtn').addEventListener('click', downloadPending);
     $('#cancelBtn').addEventListener('click', closeReview);
   }
 
