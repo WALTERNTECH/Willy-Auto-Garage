@@ -14,14 +14,12 @@ window.WILLY_PHOTOS = {
    `mapsUrl` is Willy Auto's own Google Maps link — it opens the exact place in
    Google Maps or the Maps app, so every "directions" link on the site uses it.
 
-   `embedQuery` drives the embedded map. Google's embed endpoint cannot take a
-   maps.app.goo.gl short link, so it needs coordinates ("-1.2345,36.7890") or a
-   full street address. Leave it empty and the panel shows a clickable map card
-   instead of pinning the wrong place. To fill it in: open the workshop in
-   Google Maps on a computer and copy the numbers after the @ in the address
-   bar, e.g. .../@-1.2345,36.789,17z  ->  embedQuery: '-1.2345,36.789' */
+   `embedQuery` drives the embedded map: the workshop's coordinates in Banana
+   Hill, Kiambu. Google's embed endpoint cannot take a maps.app.goo.gl short
+   link, which is why the coordinates are here rather than the link. Clear this
+   and the panel falls back to a clickable map card. */
 window.WILLY_LOCATION = {
   mapsUrl: 'https://maps.app.goo.gl/1HLa4oh5gYuCqTV26',
-  embedQuery: '',
+  embedQuery: '-1.1830138,36.7633311',
   zoom: 17
 };

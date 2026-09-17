@@ -80,36 +80,27 @@ matching the slots above, and only writes to the `willy-auto` bucket.
 
 ## 3. The map
 
-Every "directions" link on the site -- the workshop card, the map panel and the button under it --
-opens Willy Auto's own Google Maps place:
+The workshop is at **Banana Hill, Kiambu County** — `-1.1830138, 36.7633311`.
 
-```
-https://maps.app.goo.gl/1HLa4oh5gYuCqTV26
-```
+Two separate things use it:
 
-The **embedded** map is a separate thing. Google's embed endpoint cannot accept a
-`maps.app.goo.gl` short link, so until a coordinate is supplied the panel is a clickable map card
-rather than an embed pinning the wrong place.
+- **Every "directions" link** (the workshop card, the map panel, the button beneath it) opens Willy
+  Auto's own Google Maps place: `https://maps.app.goo.gl/1HLa4oh5gYuCqTV26`
+- **The embedded map** uses the coordinates, because Google's embed endpoint cannot accept a
+  `maps.app.goo.gl` short link.
 
-To turn it into a live embedded map, open the workshop in Google Maps on a computer and copy the
-numbers after the `@` in the address bar:
-
-```
-https://www.google.com/maps/place/.../@-1.2634,36.8031,17z/...
-                                       ^^^^^^^^^^^^^^^^^^
-```
-
-Then set that in `assets/js/config.js`:
+Both live in `assets/js/config.js`:
 
 ```js
 window.WILLY_LOCATION = {
   mapsUrl: 'https://maps.app.goo.gl/1HLa4oh5gYuCqTV26',
-  embedQuery: '-1.2634,36.8031',   // <- paste here
+  embedQuery: '-1.1830138,36.7633311',
   zoom: 17
 };
 ```
 
-The panel becomes a live map on the next load. A full street address works in `embedQuery` too.
+Clearing `embedQuery` falls back to a clickable map card instead of an embed — useful if the
+location ever moves and the new coordinates are not to hand yet.
 
 ## 4. The logo
 
@@ -134,8 +125,8 @@ Search `index.html` for these and replace with the real values:
 
 | What | Currently | Where |
 |---|---|---|
-| Street address | `Nairobi, Kenya` | Contact section + JSON-LD at the top of `index.html` |
-| Embedded map | a clickable card (no coordinate set yet) | `embedQuery` in `assets/js/config.js` |
+| Street address | `Banana Hill, Kiambu County` — no street or building name yet | Contact section + JSON-LD at the top of `index.html` |
+| Embedded map | live, pinned to the Banana Hill coordinates | `embedQuery` in `assets/js/config.js` |
 | Opening hours | Mon–Fri 8–6, Sat 8–5, Sun closed | Top bar, Contact section, footer, JSON-LD |
 | Stats | 10+ years, 2,500+ cars, 4.9/5 | "Willy Auto at a glance" section |
 | Reviews | three sample customer stories | Reviews section |
