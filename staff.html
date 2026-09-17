@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff photo upload | Willy Auto Perfection Centre</title>
+<meta name="description" content="Internal page for adding before and after photos to the Willy Auto Perfection Centre website.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/staff.css">
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m3.5 17 5-5 4.5 4.5L16.5 13l4 4"/>
+  </symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 12H5M11 6l-6 6 6 6"/>
+  </symbol>
+</svg>
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__badge">
+        <img src="assets/img/logo.png" alt="" width="40" height="40"
+             onerror="this.onerror=null;this.src='assets/img/logo.svg'">
+      </span>
+      <span class="brand__text">
+        <span class="brand__name">WILLY <span>AUTO</span></span>
+        <span class="brand__tag">Staff area</span>
+      </span>
+    </a>
+    <div style="margin-left:auto">
+      <a class="btn btn--outline btn--sm" href="index.html">
+        <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg> Back to website
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="staff-shell">
+
+  <div class="staff-head">
+    <span class="eyebrow">Internal</span>
+    <h1>Before &amp; after photos</h1>
+    <p>
+      Pick a photo for any service below. It is cropped to 1200&times;900 and shrunk automatically,
+      then saved straight into the website. Shoot the before and after from roughly the same
+      spot so the pair lines up.
+    </p>
+  </div>
+
+  <!-- ---------- connection ---------- -->
+  <section class="panel">
+    <div class="panel__head">
+      <h2>Publishing access</h2>
+      <span class="panel__badge is-warn" id="tokenState">Not connected</span>
+    </div>
+
+    <p class="hint">
+      Uploading writes to the website&rsquo;s GitHub repository, so this device needs a token once.
+      It is stored in this browser only &mdash; not on the website, and never shared with visitors.
+      Use a private device, and remove it below if the device is lost.
+    </p>
+
+    <ol class="steps-list">
+      <li>Sign in to GitHub and open <strong>Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens</strong>.</li>
+      <li>Generate a token with access to <code>WALTERNTECH/Willy-Auto-Garage</code> only.</li>
+      <li>Under Repository permissions, set <strong>Contents</strong> to <strong>Read and write</strong>.</li>
+      <li>Copy the token and paste it here.</li>
+    </ol>
+
+    <div class="token-row">
+      <div class="field">
+        <label for="tokenInput">GitHub token</label>
+        <input id="tokenInput" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+      </div>
+      <button class="btn btn--primary" type="button" id="saveToken">Save on this device</button>
+      <button class="btn btn--outline" type="button" id="forgetToken" hidden>Remove</button>
+    </div>
+    <p class="hint" id="tokenNote" style="margin-top:12px"></p>
+
+    <p class="hint">
+      No token? You can still use every slot below &mdash; the photo is resized and downloaded with the
+      correct filename, ready to hand to whoever manages the site.
+    </p>
+  </section>
+
+  <!-- ---------- the 22 slots ---------- -->
+  <div class="slots" id="slots"></div>
+
+</main>
+
+<!-- ---------- review before publishing ---------- -->
+<dialog class="review-dialog" id="reviewDialog">
+  <div class="review-dialog__body">
+    <h3 id="reviewTitle">Check the photo</h3>
+    <p id="reviewMeta"></p>
+    <img id="reviewImage" alt="Photo preview">
+    <div class="review-dialog__actions">
+      <button class="btn btn--primary" type="button" id="publishBtn" hidden>Publish to the website</button>
+      <p class="hint" id="publishHint" hidden style="margin:0 0 4px;text-align:center">
+        Add a token above to publish straight from here.
+      </p>
+      <button class="btn btn--outline" type="button" id="downloadBtn">Download the photo</button>
+      <button class="btn btn--ghost" type="button" id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="assets/js/services.js"></script>
+<script src="assets/js/staff.js" defer></script>
+</body>
+</html>

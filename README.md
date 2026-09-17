@@ -43,6 +43,27 @@ reads properly.
 | Diagnostic Services | `assets/img/services/diagnostics-before.jpg` | `assets/img/services/diagnostics-after.jpg` |
 | Arc Welding & Fabrication | `assets/img/services/arc-welding-before.jpg` | `assets/img/services/arc-welding-after.jpg` |
 
+### The easy way: the staff page
+
+`staff.html` (linked as **Staff photo upload** in the footer) lists all 22 slots. Pick a photo,
+and the page crops it to 4:3, scales it to 1200x900 and compresses it before anything is uploaded --
+so a 6 MB phone photo lands as a ~150 KB file with the right name.
+
+Two ways to finish:
+
+- **Publish straight to the site.** The page needs a GitHub token once per device, saved in that
+  browser only. On GitHub: **Settings -> Developer settings -> Personal access tokens ->
+  Fine-grained tokens**, give it access to `WALTERNTECH/Willy-Auto-Garage` only, set repository
+  permission **Contents: Read and write**, and paste it into the page. The photo is then committed
+  to `assets/img/services/` and goes live on the next deploy.
+- **Download instead.** With no token the page still resizes the photo and downloads it with the
+  correct filename, ready to hand to whoever manages the site.
+
+A note on the token: it is a real credential stored in that browser's localStorage. Put it only on
+a workshop device you control, scope it to this one repository, and use the **Remove** button (or
+revoke it on GitHub) if the device is lost. Anyone who opens `staff.html` without a token can look
+at the page but cannot publish anything.
+
 ## 2. The logo
 
 The site currently shows a placeholder emblem (`assets/img/logo.svg`) drawn on the brand dark navy.
@@ -111,13 +132,17 @@ issued automatically.
 ## Project layout
 
 ```
-index.html              the whole site — one page, sectioned
+index.html              the public site — one page, sectioned
+staff.html              internal before/after photo uploader
 404.html                not-found page
 render.yaml             Render blueprint (static site, no build)
 robots.txt / sitemap.xml
 assets/
   css/styles.css        design tokens + all styling
+  css/staff.css         staff page only
   js/main.js            menu, scroll effects, WhatsApp form handoff
+  js/services.js        the service list, shared with the staff page
+  js/staff.js           photo resize + commit to GitHub
   img/
     logo.svg            placeholder emblem on dark navy
     favicon.svg
@@ -128,13 +153,21 @@ scripts/
 
 ## Brand
 
+The page is white from top to bottom -- sections are separated by hairline rules rather than
+coloured blocks. Blue carries the accents, near-black carries the type, and the only solid dark
+element is the logo plate.
+
 | Token | Value | Used for |
 |---|---|---|
-| Dark navy | `#071026` | Header plate, hero, dark sections, footer |
-| Deep navy | `#0d1f45` | Gradients, icon fills |
-| Brand blue | `#1259d6` | Buttons, links, accents |
-| Light blue | `#57a2ff` | Highlights on dark backgrounds |
-| White | `#ffffff` | Page background |
-| Ink | `#0a0f1c` | Headings and body text |
+| White | `#ffffff` | Every section background |
+| Ink | `#0b0e14` | Headings |
+| Body | `#454d5c` | Body copy |
+| Muted | `#6f7788` | Captions and meta |
+| Hairline | `#e7e9ee` | Section rules, card borders |
+| Brand blue | `#1552d0` | Buttons, links, icons, accents |
+| Blue tint | `#eff4fd` | Icon chips, the quote band |
+| Navy | `#0b1a33` | Logo plate, step numbers |
+| Green | `#12a150` | WhatsApp actions only |
 
-Headings: **Archivo**. Body: **Inter**.
+Type is **Inter** throughout -- a neo-grotesque, loaded as a variable font. Body is 16px, with
+15px for secondary copy and 13px for meta. Headings top out at 42px on desktop.
