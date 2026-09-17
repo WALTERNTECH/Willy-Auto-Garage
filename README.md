@@ -20,7 +20,23 @@ python3 -m http.server 8000
 
 ---
 
-## 1. Adding the real photos
+## 1. The homepage slider
+
+Three wide slots sit at the top of the homepage and slide across automatically. Upload them from
+the staff page (easiest) or drop the files in directly:
+
+| Slot | File |
+|---|---|
+| Slide 1 | `assets/img/hero/slide-1.jpg` |
+| Slide 2 | `assets/img/hero/slide-2.jpg` |
+| Slide 3 | `assets/img/hero/slide-3.jpg` |
+
+Landscape shots, ideally **1600 x 900** (16:9) -- the staff page crops and scales to that for you.
+The slider builds itself from whatever loads: two photos gives two slides and two dots, one photo
+gives a still image with no arrows, and none shows a placeholder panel telling you what is missing.
+Slide 3 is optional.
+
+## 2. Adding the service photos
 
 The before/after panes under each service show a styled placeholder with the exact filename it is
 waiting for. **Drop a photo in at that path and it appears automatically** — no code changes needed.
@@ -45,9 +61,11 @@ reads properly.
 
 ### The easy way: the staff page
 
-`staff.html` (linked as **Staff photo upload** in the footer) lists all 22 slots. Pick a photo,
-and the page crops it to 4:3, scales it to 1200x900 and compresses it before anything is uploaded --
-so a 6 MB phone photo lands as a ~150 KB file with the right name.
+`staff.html` (linked as **Staff photo upload** in the footer) lists all 25 slots -- the three
+homepage slider photos and the before/after pair for each of the 11 services. Pick a photo and the
+page crops it to that slot's shape (16:9 for the slider, 4:3 for the service panes), scales it down
+and compresses it before anything is uploaded -- so a 6 MB phone photo lands as a ~150 KB file with
+the right name.
 
 Two ways to finish:
 
@@ -64,7 +82,7 @@ a workshop device you control, scope it to this one repository, and use the **Re
 revoke it on GitHub) if the device is lost. Anyone who opens `staff.html` without a token can look
 at the page but cannot publish anything.
 
-## 2. The logo
+## 3. The logo
 
 The site currently shows a placeholder emblem (`assets/img/logo.svg`) drawn on the brand dark navy.
 
@@ -81,7 +99,7 @@ That flood-fills the background from the edges inwards to `#071026` and leaves t
 untouched. Pure Node, no `npm install`. (A transparent-background PNG also works — it sits on a dark
 navy plate in the header either way.)
 
-## 3. Details to confirm before going live
+## 4. Details to confirm before going live
 
 Search `index.html` for these and replace with the real values:
 
@@ -98,7 +116,7 @@ Search `index.html` for these and replace with the real values:
 The three sample reviews are placeholders written in the right shape — swap in real customer words
 before launch.
 
-## 4. Changing the phone number or email
+## 5. Changing the phone number or email
 
 They appear in two places:
 
@@ -133,7 +151,7 @@ issued automatically.
 
 ```
 index.html              the public site — one page, sectioned
-staff.html              internal before/after photo uploader
+staff.html              internal photo uploader (slider + before/after)
 404.html                not-found page
 render.yaml             Render blueprint (static site, no build)
 robots.txt / sitemap.xml
@@ -142,10 +160,12 @@ assets/
   css/staff.css         staff page only
   js/main.js            menu, scroll effects, WhatsApp form handoff
   js/services.js        the service list, shared with the staff page
+  js/main.js            also runs the homepage slider
   js/staff.js           photo resize + commit to GitHub
   img/
     logo.svg            placeholder emblem on dark navy
     favicon.svg
+    hero/               homepage slider photos go here
     services/           before/after photos go here
 scripts/
   recolor-logo.mjs      puts a logo's background on brand dark navy

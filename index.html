@@ -111,6 +111,8 @@
 <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a2 2 0 0 1 2 2v1"/><rect x="3" y="7.5" width="18" height="12" rx="2.5"/><circle cx="16.5" cy="13.5" r="1.3"/></symbol>
 <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
 <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+<symbol id="i-chev-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></symbol>
+<symbol id="i-chev-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></symbol>
 <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m3.5 17 5-5 4.5 4.5L16.5 13l4 4"/></symbol>
 <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.6"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 4.6a3.6 3.6 0 0 1 0 6.9M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></symbol>
 <symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 16.5h13"/><path d="M4 16.5v2.2M20 16.5v2.2"/><path d="M3 12.5 5 7.4A2 2 0 0 1 6.9 6h10.2A2 2 0 0 1 19 7.4l2 5.1"/><rect x="2.5" y="12.5" width="19" height="4.5" rx="1.6"/><circle cx="7" cy="14.8" r="1.1"/><circle cx="17" cy="14.8" r="1.1"/></symbol>
@@ -177,11 +179,46 @@
 <main id="main">
 <span id="top"></span>
 
-<!-- ============ HERO ============ -->
-<section class="hero">
+<!-- ============ PHOTO SLIDER ============ -->
+<section class="showcase" aria-label="Inside the workshop">
+  <div class="container">
+    <div class="slider" id="slider" data-autoplay="6500">
+      <div class="slider__viewport">
+        <div class="slider__track" id="sliderTrack">
+          <figure class="slide">
+            <img src="assets/img/hero/slide-1.jpg" alt="Willy Auto Perfection Centre workshop 1"
+                 decoding="async" onerror="this.onerror=null;this.closest('.slide').remove()">
+          </figure>
+          <figure class="slide">
+            <img src="assets/img/hero/slide-2.jpg" alt="Willy Auto Perfection Centre workshop 2"
+                 decoding="async" onerror="this.onerror=null;this.closest('.slide').remove()">
+          </figure>
+          <figure class="slide">
+            <img src="assets/img/hero/slide-3.jpg" alt="Willy Auto Perfection Centre workshop 3"
+                 decoding="async" onerror="this.onerror=null;this.closest('.slide').remove()">
+          </figure>
+        </div>
+        <div class="slider__empty" id="sliderEmpty" hidden>
+          <svg aria-hidden="true"><use href="#i-image"></use></svg>
+          <b>Workshop photos go here</b>
+          <span>Add them from the staff page &mdash; <code>assets/img/hero/slide-1.jpg</code> to <code>slide-3.jpg</code></span>
+        </div>
+      </div>
+      <button class="slider__nav is-prev" type="button" id="sliderPrev" aria-label="Previous photo" hidden>
+        <svg aria-hidden="true"><use href="#i-chev-left"></use></svg>
+      </button>
+      <button class="slider__nav is-next" type="button" id="sliderNext" aria-label="Next photo" hidden>
+        <svg aria-hidden="true"><use href="#i-chev-right"></use></svg>
+      </button>
+      <div class="slider__dots" id="sliderDots" role="tablist" aria-label="Choose a photo"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTRO ============ -->
+<section class="hero" id="about">
   <div class="container hero__inner">
     <div class="hero__copy">
-      <span class="hero__badge"><b>Since day one</b> Accident repair &amp; restoration specialists</span>
       <h1>We bring crashed, faded and tired cars back to <em>perfection</em>.</h1>
       <p class="hero__lead">
         Willy Auto Perfection Centre is a full-service garage in Nairobi. Panel beating, oven-baked spray

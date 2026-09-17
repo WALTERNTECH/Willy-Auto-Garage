@@ -1,8 +1,9 @@
 /* =========================================================
    Staff photo uploader
-   Resizes a photo to 1200x900 and commits it straight into the
-   site repository, so the before/after panes fill in without
-   anyone touching code. No server involved.
+   Resizes a photo to the right size for its slot and commits it
+   straight into the site repository, so the homepage slider and the
+   before/after panes fill in without anyone touching code.
+   No server involved.
    ========================================================= */
 (function () {
   'use strict';
@@ -10,15 +11,52 @@
   var REPO_OWNER = 'WALTERNTECH';
   var REPO_NAME = 'Willy-Auto-Garage';
   var BRANCH = 'main';
-  var DIR = 'assets/img/services';
   var TOKEN_KEY = 'willy.staff.github-token';
-
-  var TARGET_W = 1200;
-  var TARGET_H = 900;
   var JPEG_QUALITY = 0.82;
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var services = window.WILLY_SERVICES || [];
+
+  /* ---------- what can be uploaded ---------- */
+  // Homepage slider: wide photos of the workshop.
+  var HERO = { w: 1600, h: 900, ratio: 'wide', dir: 'assets/img/hero' };
+  // Service panes: 4:3 so every before/after pair lines up.
+  var SERVICE = { w: 1200, h: 900, ratio: 'std', dir: 'assets/img/services' };
+
+  function heroGroup() {
+    var slots = [1, 2, 3].map(function (n) {
+      return {
+        key: 'slide-' + n,
+        label: 'Slide ' + n,
+        file: 'slide-' + n + '.jpg',
+        path: HERO.dir + '/slide-' + n + '.jpg',
+        title: 'Homepage slider — slide ' + n,
+        w: HERO.w, h: HERO.h, ratio: HERO.ratio
+      };
+    });
+    return {
+      id: 'homepage-slider',
+      title: 'Homepage slider',
+      note: 'The photos that slide across the top of the homepage. Landscape shots work best. Two is plenty — a third is optional.',
+      slots: slots
+    };
+  }
+
+  function serviceGroup(service) {
+    var slots = ['before', 'after'].map(function (state) {
+      return {
+        key: service.slug + '-' + state,
+        label: state === 'before' ? 'Before' : 'After',
+        file: service.slug + '-' + state + '.jpg',
+        path: SERVICE.dir + '/' + service.slug + '-' + state + '.jpg',
+        title: service.name + ' — ' + state,
+        w: SERVICE.w, h: SERVICE.h, ratio: SERVICE.ratio
+      };
+    });
+    return { id: service.slug, title: service.name, slots: slots };
+  }
+
+  var groups = [heroGroup()].concat(services.map(serviceGroup));
 
   /* ---------- token, kept on this device only ---------- */
   function getToken() {
@@ -42,11 +80,9 @@
   }
 
   /* ---------- image handling ---------- */
-  function fileName(slug, state) { return slug + '-' + state + '.jpg'; }
-  function filePath(slug, state) { return DIR + '/' + fileName(slug, state); }
-
-  // Centre-crop to 4:3 and scale to 1200x900 so every pane matches.
-  async function normalise(file) {
+  // Centre-crop to the slot's shape, then scale down, so every photo in a
+  // row is the same size however it was taken.
+  async function normalise(file, targetW, targetH) {
     var bitmap;
     try {
       bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
@@ -54,17 +90,17 @@
       bitmap = await createImageBitmap(file);   // older browsers ignore the option
     }
     var canvas = document.createElement('canvas');
-    canvas.width = TARGET_W;
-    canvas.height = TARGET_H;
+    canvas.width = targetW;
+    canvas.height = targetH;
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, TARGET_W, TARGET_H);
+    ctx.fillRect(0, 0, targetW, targetH);
     ctx.imageSmoothingQuality = 'high';
 
-    var scale = Math.max(TARGET_W / bitmap.width, TARGET_H / bitmap.height);
+    var scale = Math.max(targetW / bitmap.width, targetH / bitmap.height);
     var w = bitmap.width * scale;
     var h = bitmap.height * scale;
-    ctx.drawImage(bitmap, (TARGET_W - w) / 2, (TARGET_H - h) / 2, w, h);
+    ctx.drawImage(bitmap, (targetW - w) / 2, (targetH - h) / 2, w, h);
     if (bitmap.close) bitmap.close();
 
     return new Promise(function (resolve, reject) {
@@ -133,26 +169,26 @@
   }
 
   /* ---------- building the grid ---------- */
-  function icon(id, cls) {
-    return '<svg' + (cls ? ' class="' + cls + '"' : '') + ' aria-hidden="true"><use href="#' + id + '"></use></svg>';
+  var slotIndex = {};   // key -> slot config
+
+  function icon(id) {
+    return '<svg aria-hidden="true"><use href="#' + id + '"></use></svg>';
   }
 
-  function slotMarkup(service, state) {
-    var label = state === 'before' ? 'Before' : 'After';
-    var name = fileName(service.slug, state);
-    var id = service.slug + '-' + state;
+  function slotMarkup(slot) {
+    slotIndex[slot.key] = slot;
     return '' +
-      '<div class="slot" data-slug="' + service.slug + '" data-state="' + state + '" id="slot-' + id + '">' +
-        '<div class="slot__label"><span class="slot__dot"></span>' + label + '</div>' +
+      '<div class="slot slot--' + slot.ratio + '" data-key="' + slot.key + '" id="slot-' + slot.key + '">' +
+        '<div class="slot__label"><span class="slot__dot"></span>' + slot.label + '</div>' +
         '<div class="slot__frame">' +
-          '<img alt="" src="' + filePath(service.slug, state) + '" ' +
+          '<img alt="" src="' + slot.path + '" ' +
                'onerror="this.onerror=null;this.classList.add(\'is-missing\')">' +
           '<span class="slot__empty">' + icon('i-image') + 'No photo yet</span>' +
         '</div>' +
-        '<div class="slot__file">' + name + '</div>' +
+        '<div class="slot__file">' + slot.file + '</div>' +
         '<div class="slot__actions">' +
-          '<input type="file" accept="image/*" id="file-' + id + '">' +
-          '<button type="button" class="btn btn--outline btn--sm js-pick" data-for="file-' + id + '">' +
+          '<input type="file" accept="image/*" id="file-' + slot.key + '">' +
+          '<button type="button" class="btn btn--outline btn--sm js-pick" data-for="file-' + slot.key + '">' +
             'Choose photo' +
           '</button>' +
         '</div>' +
@@ -161,23 +197,20 @@
   }
 
   function render() {
-    var host = $('#slots');
-    host.innerHTML = services.map(function (service) {
+    $('#slots').innerHTML = groups.map(function (group) {
       return '' +
-        '<section class="svc">' +
+        '<section class="svc' + (group.id === 'homepage-slider' ? ' svc--hero' : '') + '">' +
           '<div class="svc__head">' +
-            '<h3>' + service.name + '</h3>' +
-            '<span class="svc__count" data-count-for="' + service.slug + '"></span>' +
+            '<h3>' + group.title + '</h3>' +
+            '<span class="svc__count" data-count-for="' + group.id + '"></span>' +
           '</div>' +
-          '<div class="svc__panes">' +
-            slotMarkup(service, 'before') +
-            slotMarkup(service, 'after') +
-          '</div>' +
+          (group.note ? '<p class="svc__note">' + group.note + '</p>' : '') +
+          '<div class="svc__panes">' + group.slots.map(slotMarkup).join('') + '</div>' +
         '</section>';
     }).join('');
 
     // Mark slots that already have a photo once each image settles.
-    host.querySelectorAll('.slot').forEach(function (slot) {
+    document.querySelectorAll('.slot').forEach(function (slot) {
       var img = slot.querySelector('img');
       var done = function () {
         if (!img.classList.contains('is-missing') && img.naturalWidth > 0) slot.classList.add('has-photo');
@@ -189,50 +222,52 @@
   }
 
   function updateCounts() {
-    services.forEach(function (service) {
-      var filled = document.querySelectorAll('.slot[data-slug="' + service.slug + '"].has-photo').length;
-      var el = document.querySelector('[data-count-for="' + service.slug + '"]');
-      if (el) el.textContent = filled + ' of 2';
+    groups.forEach(function (group) {
+      var filled = group.slots.filter(function (slot) {
+        var el = document.getElementById('slot-' + slot.key);
+        return el && el.classList.contains('has-photo');
+      }).length;
+      var el = document.querySelector('[data-count-for="' + group.id + '"]');
+      if (el) el.textContent = filled + ' of ' + group.slots.length;
     });
   }
 
-  function status(slot, message, kind) {
-    var el = slot.querySelector('.slot__status');
+  function status(slotEl, message, kind) {
+    var el = slotEl.querySelector('.slot__status');
     el.textContent = message || '';
     el.className = 'slot__status' + (kind ? ' is-' + kind : '');
   }
 
   /* ---------- review dialog ---------- */
-  var pending = null;   // { slot, blob, url, service, state }
+  var pending = null;   // { el, slot, blob, url }
 
-  function openReview(slot, blob, service, state) {
+  function openReview(el, slot, blob) {
     if (pending && pending.url) URL.revokeObjectURL(pending.url);
     var url = URL.createObjectURL(blob);
-    pending = { slot: slot, blob: blob, url: url, service: service, state: state };
+    pending = { el: el, slot: slot, blob: blob, url: url };
 
-    $('#reviewImage').src = url;
-    $('#reviewTitle').textContent = service.name + ' — ' + (state === 'before' ? 'before' : 'after');
+    var preview = $('#reviewImage');
+    preview.src = url;
+    preview.style.aspectRatio = slot.w + '/' + slot.h;
+    $('#reviewTitle').textContent = slot.title;
     $('#reviewMeta').textContent =
-      'Saved as ' + fileName(service.slug, state) + ' · ' + TARGET_W + '×' + TARGET_H +
-      ' · ' + Math.round(blob.size / 1024) + ' KB';
+      'Saved as ' + slot.file + ' · ' + slot.w + '×' + slot.h + ' · ' + Math.round(blob.size / 1024) + ' KB';
     $('#publishBtn').hidden = !getToken();
     $('#publishHint').hidden = !!getToken();
     $('#reviewDialog').showModal();
   }
 
-  function closeReview() {
-    $('#reviewDialog').close();
-  }
+  function closeReview() { $('#reviewDialog').close(); }
 
   function downloadPending() {
     if (!pending) return;
     var a = document.createElement('a');
     a.href = pending.url;
-    a.download = fileName(pending.service.slug, pending.state);
+    a.download = pending.slot.file;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    status(pending.slot, 'Downloaded. Upload it to ' + DIR + ' on GitHub.', 'ok');
+    status(pending.el, 'Downloaded. Upload it to ' + pending.slot.path.replace(/\/[^/]+$/, '') + ' on GitHub.', 'ok');
     closeReview();
   }
 
@@ -241,31 +276,29 @@
     var token = getToken();
     if (!token) return;
 
+    var el = pending.el;
     var slot = pending.slot;
-    var service = pending.service;
-    var state = pending.state;
     var blob = pending.blob;
-    var path = filePath(service.slug, state);
 
     closeReview();
-    slot.classList.add('is-busy');
-    status(slot, 'Uploading…');
+    el.classList.add('is-busy');
+    status(el, 'Uploading…');
 
     try {
       var base64 = toBase64(await blob.arrayBuffer());
-      await commitFile(path, base64, 'Add ' + state + ' photo for ' + service.name, token);
+      await commitFile(slot.path, base64, 'Add photo: ' + slot.title, token);
 
       // Bust the cache so the new photo shows straight away.
-      var img = slot.querySelector('img');
+      var img = el.querySelector('img');
       img.classList.remove('is-missing');
-      img.src = path + '?v=' + Date.now();
-      slot.classList.add('has-photo');
+      img.src = slot.path + '?v=' + Date.now();
+      el.classList.add('has-photo');
       updateCounts();
-      status(slot, 'Published. It appears on the website after the next deploy.', 'ok');
+      status(el, 'Published. It appears on the website after the next deploy.', 'ok');
     } catch (err) {
-      status(slot, err.message, 'error');
+      status(el, err.message, 'error');
     } finally {
-      slot.classList.remove('is-busy');
+      el.classList.remove('is-busy');
     }
   }
 
@@ -292,36 +325,35 @@
       paintTokenState();
     });
 
-    // One delegated listener covers all 22 slots.
+    // One delegated listener covers every slot.
     document.addEventListener('click', function (e) {
       var pick = e.target.closest('.js-pick');
-      if (pick) {
-        var input = document.getElementById(pick.getAttribute('data-for'));
-        if (input) input.click();
-      }
+      if (!pick) return;
+      var input = document.getElementById(pick.getAttribute('data-for'));
+      if (input) input.click();
     });
 
     document.addEventListener('change', async function (e) {
       var input = e.target;
       if (input.type !== 'file' || !input.files || !input.files[0]) return;
 
-      var slot = input.closest('.slot');
-      var service = services.find(function (s) { return s.slug === slot.dataset.slug; });
+      var el = input.closest('.slot');
+      var slot = slotIndex[el.dataset.key];
       var file = input.files[0];
       input.value = '';                                   // allow re-picking the same file
 
       if (!/^image\//.test(file.type)) {
-        status(slot, 'That file is not an image.', 'error');
+        status(el, 'That file is not an image.', 'error');
         return;
       }
 
-      status(slot, 'Preparing photo…');
+      status(el, 'Preparing photo…');
       try {
-        var blob = await normalise(file);
-        status(slot, '');
-        openReview(slot, blob, service, slot.dataset.state);
+        var blob = await normalise(file, slot.w, slot.h);
+        status(el, '');
+        openReview(el, slot, blob);
       } catch (err) {
-        status(slot, err.message, 'error');
+        status(el, err.message, 'error');
       }
     });
 

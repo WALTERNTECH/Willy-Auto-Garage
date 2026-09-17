@@ -74,6 +74,140 @@
     reveals.forEach(function (el) { el.classList.add('is-in'); });
   }
 
+  /* ---------- 4b. Photo slider ----------
+     Slides whose image is missing remove themselves via onerror, so the
+     slider only ever runs on photos that actually loaded. */
+  (function slider() {
+    var root = $('#slider');
+    if (!root) return;
+
+    var track = $('#sliderTrack');
+    var dotsHost = $('#sliderDots');
+    var prev = $('#sliderPrev');
+    var next = $('#sliderNext');
+    var empty = $('#sliderEmpty');
+    var index = 0;
+    var timer = null;
+    var slides = [];
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var autoplayMs = parseInt(root.getAttribute('data-autoplay'), 10) || 6500;
+
+    function count() { return slides.length; }
+
+    function goTo(n, userDriven) {
+      if (!count()) return;
+      index = (n + count()) % count();
+      track.style.transform = 'translate3d(' + (-index * 100) + '%,0,0)';
+      slides.forEach(function (slide, i) {
+        slide.setAttribute('aria-hidden', String(i !== index));
+      });
+      Array.prototype.forEach.call(dotsHost.children, function (dot, i) {
+        dot.setAttribute('aria-selected', String(i === index));
+      });
+      if (userDriven) restart();
+    }
+
+    function start() {
+      if (reduceMotion || count() < 2 || timer) return;
+      timer = setInterval(function () { goTo(index + 1); }, autoplayMs);
+    }
+    function stop() { clearInterval(timer); timer = null; }
+    function restart() { stop(); start(); }
+
+    // Safe to call more than once — it rebuilds from whatever slides survive.
+    function build() {
+      stop();
+      slides = $$('.slide', track);
+      dotsHost.innerHTML = '';
+
+      if (!count()) {                       // no photos uploaded yet
+        empty.hidden = false;
+        prev.hidden = next.hidden = true;
+        return;
+      }
+      empty.hidden = true;
+      if (index >= count()) index = 0;
+
+      var many = count() > 1;
+      prev.hidden = next.hidden = !many;
+      if (many) {
+        slides.forEach(function (_, i) {
+          var dot = document.createElement('button');
+          dot.type = 'button';
+          dot.setAttribute('role', 'tab');
+          dot.setAttribute('aria-label', 'Photo ' + (i + 1) + ' of ' + count());
+          dot.addEventListener('click', function () { goTo(i, true); });
+          dotsHost.appendChild(dot);
+        });
+      }
+      goTo(index);
+      start();
+    }
+
+    prev.addEventListener('click', function () { goTo(index - 1, true); });
+    next.addEventListener('click', function () { goTo(index + 1, true); });
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', start);
+    document.addEventListener('visibilitychange', function () {
+      document.hidden ? stop() : start();
+    });
+
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { goTo(index - 1, true); }
+      else if (e.key === 'ArrowRight') { goTo(index + 1, true); }
+    });
+
+    // Swipe
+    var startX = 0, deltaX = 0, dragging = false;
+    root.addEventListener('touchstart', function (e) {
+      if (count() < 2) return;
+      startX = e.touches[0].clientX; deltaX = 0; dragging = true;
+      stop();
+      root.classList.add('is-dragging');
+    }, { passive: true });
+    root.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      deltaX = e.touches[0].clientX - startX;
+      var pct = (deltaX / root.clientWidth) * 100;
+      track.style.transform = 'translate3d(' + (-index * 100 + pct) + '%,0,0)';
+    }, { passive: true });
+    root.addEventListener('touchend', function () {
+      if (!dragging) return;
+      dragging = false;
+      root.classList.remove('is-dragging');
+      if (Math.abs(deltaX) > root.clientWidth * 0.15) goTo(index + (deltaX < 0 ? 1 : -1));
+      else goTo(index);
+      start();
+    });
+
+    // Images that 404 drop their own slide, so wait for them to settle first —
+    // but never let one that hangs keep the slider from ever starting.
+    var imgs = $$('.slide img', track);
+    var left = imgs.length;
+    var fallback = setTimeout(build, 2500);
+
+    function settle() {
+      if (--left > 0) return;
+      clearTimeout(fallback);
+      build();
+    }
+
+    if (!left) { clearTimeout(fallback); build(); return; }
+    imgs.forEach(function (img) {
+      if (img.complete) setTimeout(settle, 0);
+      else {
+        img.addEventListener('load', settle);
+        img.addEventListener('error', function () {
+          settle();
+          if (left <= 0) build();          // a late failure re-counts the slides
+        });
+      }
+    });
+  })();
+
   /* ---------- 5. Toast ---------- */
   var toastEl = $('#toast');
   var toastTimer;
