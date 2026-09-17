@@ -208,6 +208,28 @@
     });
   })();
 
+  /* ---------- 4c. Map ----------
+     Google's embed endpoint cannot take a maps.app.goo.gl short link, so the
+     panel stays a clickable card until a coordinate or address is configured.
+     Set WILLY_LOCATION.embedQuery and it becomes a live map. */
+  (function map() {
+    var panel = $('#mapPanel');
+    var place = window.WILLY_LOCATION;
+    if (!panel || !place || !place.embedQuery) return;
+
+    var frame = document.createElement('iframe');
+    frame.title = 'Map to Willy Auto Perfection Centre';
+    frame.loading = 'lazy';
+    frame.referrerPolicy = 'no-referrer-when-downgrade';
+    frame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(place.embedQuery) +
+                '&z=' + (place.zoom || 17) + '&output=embed';
+
+    var wrap = document.createElement('div');
+    wrap.className = 'map';
+    wrap.appendChild(frame);
+    panel.replaceWith(wrap);
+  })();
+
   /* ---------- 5. Toast ---------- */
   var toastEl = $('#toast');
   var toastTimer;

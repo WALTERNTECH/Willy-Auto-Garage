@@ -522,6 +522,24 @@ h4{font-size:var(--fs-base);font-weight:620}
   position:absolute;inset:0;z-index:0;display:grid;align-content:center;justify-items:center;
   gap:6px;padding:22px;text-align:center;color:var(--muted);font-size:var(--fs-sm);
 }
+/* Shown until a coordinate is configured: a real link to the workshop rather
+   than an embed pinning the wrong place. */
+.map--card{
+  display:block;text-decoration:none;
+  background:
+    repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 46px),
+    repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 46px),
+    var(--wash);
+  transition:border-color .15s var(--ease);
+}
+.map--card:hover{border-color:var(--blue)}
+.map--card .map__fallback{position:relative;inset:auto;min-height:320px}
+.map__open{
+  margin-top:6px;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:var(--r-sm);background:#fff;
+  border:1px solid var(--line-2);color:var(--ink);font-weight:560;
+}
+.map--card:hover .map__open{border-color:var(--blue);color:var(--blue)}
 .map__fallback svg{width:24px;height:24px;color:var(--blue);fill:none;stroke:currentColor;stroke-width:1.7}
 .map__fallback b{color:var(--ink);font-size:var(--fs-base);font-weight:600}
 .map__link{

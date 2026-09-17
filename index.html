@@ -41,6 +41,7 @@ function willyImgError(img){
   "email": "willyauto@gmail.com",
   "address": { "@type": "PostalAddress", "addressLocality": "Nairobi", "addressCountry": "KE" },
   "areaServed": "Nairobi, Kenya",
+  "hasMap": "https://maps.app.goo.gl/1HLa4oh5gYuCqTV26",
   "priceRange": "$$",
   "openingHoursSpecification": [
     { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "18:00" },
@@ -961,6 +962,7 @@ function willyImgError(img){
           <div>
             <h3>Workshop</h3>
             <p>Willy Auto Perfection Centre<br>Nairobi, Kenya</p>
+            <a href="https://maps.app.goo.gl/1HLa4oh5gYuCqTV26" target="_blank" rel="noopener">View on Google Maps</a>
           </div>
         </div>
         <div class="contact__item">
@@ -976,17 +978,15 @@ function willyImgError(img){
         </div>
       </div>
       <div class="map-wrap">
-        <div class="map">
-          <div class="map__fallback">
+        <a class="map map--card" id="mapPanel" href="https://maps.app.goo.gl/1HLa4oh5gYuCqTV26" target="_blank" rel="noopener">
+          <span class="map__fallback">
             <svg aria-hidden="true"><use href="#i-pin"></use></svg>
             <b>Willy Auto Perfection Centre</b>
             <span>Nairobi, Kenya</span>
-          </div>
-          <iframe title="Map to Willy Auto Perfection Centre" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                  src="https://maps.google.com/maps?q=Nairobi%2C%20Kenya&amp;z=12&amp;output=embed"></iframe>
-        </div>
-        <a class="map__link" href="https://www.google.com/maps/search/?api=1&amp;query=Willy+Auto+Perfection+Centre+Nairobi"
-           target="_blank" rel="noopener">
+            <span class="map__open">Open in Google Maps</span>
+          </span>
+        </a>
+        <a class="map__link" href="https://maps.app.goo.gl/1HLa4oh5gYuCqTV26" target="_blank" rel="noopener">
           Get directions to the workshop <svg aria-hidden="true"><use href="#i-arrow-right"></use></svg>
         </a>
       </div>

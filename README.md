@@ -78,7 +78,40 @@ A note on what the passcode protects: anyone holding it can replace the photos o
 cannot read or touch anything else in the Krypton project -- the upload function only accepts paths
 matching the slots above, and only writes to the `willy-auto` bucket.
 
-## 3. The logo
+## 3. The map
+
+Every "directions" link on the site -- the workshop card, the map panel and the button under it --
+opens Willy Auto's own Google Maps place:
+
+```
+https://maps.app.goo.gl/1HLa4oh5gYuCqTV26
+```
+
+The **embedded** map is a separate thing. Google's embed endpoint cannot accept a
+`maps.app.goo.gl` short link, so until a coordinate is supplied the panel is a clickable map card
+rather than an embed pinning the wrong place.
+
+To turn it into a live embedded map, open the workshop in Google Maps on a computer and copy the
+numbers after the `@` in the address bar:
+
+```
+https://www.google.com/maps/place/.../@-1.2634,36.8031,17z/...
+                                       ^^^^^^^^^^^^^^^^^^
+```
+
+Then set that in `assets/js/config.js`:
+
+```js
+window.WILLY_LOCATION = {
+  mapsUrl: 'https://maps.app.goo.gl/1HLa4oh5gYuCqTV26',
+  embedQuery: '-1.2634,36.8031',   // <- paste here
+  zoom: 17
+};
+```
+
+The panel becomes a live map on the next load. A full street address works in `embedQuery` too.
+
+## 4. The logo
 
 The site currently shows a placeholder emblem (`assets/img/logo.svg`) drawn on the brand dark navy.
 
@@ -95,14 +128,14 @@ That flood-fills the background from the edges inwards to `#071026` and leaves t
 untouched. Pure Node, no `npm install`. (A transparent-background PNG also works — it sits on a dark
 navy plate in the header either way.)
 
-## 4. Details to confirm before going live
+## 5. Details to confirm before going live
 
 Search `index.html` for these and replace with the real values:
 
 | What | Currently | Where |
 |---|---|---|
 | Street address | `Nairobi, Kenya` | Contact section + JSON-LD at the top of `index.html` |
-| Google Map pin | a general Nairobi map | the `<iframe>` and the "Get directions" link in the Contact section |
+| Embedded map | a clickable card (no coordinate set yet) | `embedQuery` in `assets/js/config.js` |
 | Opening hours | Mon–Fri 8–6, Sat 8–5, Sun closed | Top bar, Contact section, footer, JSON-LD |
 | Stats | 10+ years, 2,500+ cars, 4.9/5 | "Willy Auto at a glance" section |
 | Reviews | three sample customer stories | Reviews section |
@@ -112,7 +145,7 @@ Search `index.html` for these and replace with the real values:
 The three sample reviews are placeholders written in the right shape — swap in real customer words
 before launch.
 
-## 5. Changing the phone number or email
+## 6. Changing the phone number or email
 
 They appear in two places:
 
@@ -157,7 +190,7 @@ assets/
   css/styles.css        design tokens + all styling
   css/staff.css         staff page only
   js/main.js            menu, scroll effects, WhatsApp form handoff
-  js/config.js          where photos are served from and uploaded to
+  js/config.js          photo storage endpoints + the workshop location
   js/services.js        the service list, shared with the staff page
   js/main.js            also runs the homepage slider
   js/staff.js           passcode, photo resize, upload
