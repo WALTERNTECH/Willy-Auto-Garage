@@ -131,7 +131,7 @@ Search `index.html` for these and replace with the real values:
 | Stats | 10+ years, 2,500+ cars, 4.9/5 | "Willy Auto at a glance" section |
 | Reviews | three sample customer stories | Reviews section |
 | Social links | `href="#"` | Footer `.socials` |
-| Canonical URL / sitemap | `willy-auto-garage.onrender.com` | `<head>`, `robots.txt`, `sitemap.xml` |
+| Canonical URL / sitemap | `willy-auto-garage.vercel.app` | `<head>`, `robots.txt`, `sitemap.xml` |
 
 The three sample reviews are placeholders written in the right shape — swap in real customer words
 before launch.
@@ -147,29 +147,34 @@ The WhatsApp number is in international format with no `+` or spaces: `254710817
 
 ---
 
-## Deploying on Vercel
+## Hosting: Vercel
 
-The repo is ready for Vercel as-is: plain static files, no build step. `vercel.json` sets security
-headers, long-term caching for the fonts and clean URLs (`/staff` instead of `/staff.html`), and
-`.vercelignore` keeps the edge-function source, scripts and this README off the public site.
+**Live at https://willy-auto-garage.vercel.app** — project `willy-auto-garage` on the walterntech
+Vercel account (Hobby plan). The canonical link, `robots.txt` and `sitemap.xml` all point here.
 
-1. Go to **vercel.com → Add New → Project**.
-2. Import **WALTERNTECH/Willy-Auto-Garage**. If Vercel asks, install its GitHub app and give it
-   access to that repository.
-3. Leave everything as detected: Framework preset **Other**, no build command, output directory
-   left blank.
-4. **Deploy.**
+The site is plain static files with no build step. `vercel.json` sets security headers, long-term
+caching for the fonts and clean URLs (`/staff` instead of `/staff.html`); `.vercelignore` keeps the
+edge-function source, scripts and this README off the public site. Photos come from Supabase, so
+they are unaffected by where the site is hosted.
 
-From then on every push to `main` redeploys on its own. The site is fully static, so photos keep
-coming from Supabase exactly as they do on Render -- nothing to configure there.
+### Turning on automatic deploys
 
-If Vercel becomes the main address, update the `canonical` link in `index.html`, plus `robots.txt`
-and `sitemap.xml`, which still point at the onrender.com address.
+The project is **not yet connected to GitHub**, because Vercel's GitHub app on the WALTERNTECH
+account only has access to `fpesa.markets`. Until it is, pushing to `main` does not update the site.
+To connect it:
 
-## Deploying on Render
+1. On GitHub: **Settings → Applications → Vercel → Configure**, and under *Repository access* add
+   **Willy-Auto-Garage**.
+2. In Vercel: the `willy-auto-garage` project → **Settings → Git → Connect Git Repository** →
+   **WALTERNTECH/Willy-Auto-Garage**.
 
-The repo includes `render.yaml`, so Render can pick it up as a blueprint. Manual setup is just as
-quick:
+After that every push to `main` redeploys on its own.
+
+## Hosting: Render (suspended)
+
+The original Render static site (`willy-auto-garage.onrender.com`) was suspended by Render for
+billing on 29 October 2026 and is no longer the live address. The `render.yaml` blueprint is kept in
+case it is ever brought back. Manual setup is just as quick:
 
 - **Type:** Static Site
 - **Build command:** *(leave empty)*
