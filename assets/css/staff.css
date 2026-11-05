@@ -4,14 +4,14 @@
 
 .staff-head{margin-bottom:28px}
 .staff-head h1{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:6px}
-.staff-head p{color:var(--muted);font-size:var(--fs-base);margin:0;max-width:62ch}
+.staff-head p{color:var(--muted);font-size:var(--fs-body);margin:0;max-width:62ch}
 
 .panel{
   border:1px solid var(--line);border-radius:var(--r);background:#fff;
   padding:20px;margin-bottom:20px;
 }
 .panel__head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.panel__head h2{font-size:var(--fs-lg);margin:0}
+.panel__head h2{font-size:1.0625rem;margin:0}
 .panel__badge{
   margin-left:auto;display:inline-flex;align-items:center;gap:6px;
   padding:3px 9px;border-radius:999px;font-size:var(--fs-2xs);font-weight:620;
@@ -38,7 +38,7 @@
   display:flex;align-items:center;gap:10px;padding:12px 16px;
   border-bottom:1px solid var(--line);background:var(--wash);
 }
-.svc__head h3{margin:0;font-size:var(--fs-base)}
+.svc__head h3{margin:0;font-size:var(--fs-body)}
 .svc__count{
   margin-left:auto;font-size:var(--fs-2xs);font-weight:620;letter-spacing:.05em;
   text-transform:uppercase;color:var(--faint);

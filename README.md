@@ -147,6 +147,25 @@ The WhatsApp number is in international format with no `+` or spaces: `254710817
 
 ---
 
+## Deploying on Vercel
+
+The repo is ready for Vercel as-is: plain static files, no build step. `vercel.json` sets security
+headers, long-term caching for the fonts and clean URLs (`/staff` instead of `/staff.html`), and
+`.vercelignore` keeps the edge-function source, scripts and this README off the public site.
+
+1. Go to **vercel.com → Add New → Project**.
+2. Import **WALTERNTECH/Willy-Auto-Garage**. If Vercel asks, install its GitHub app and give it
+   access to that repository.
+3. Leave everything as detected: Framework preset **Other**, no build command, output directory
+   left blank.
+4. **Deploy.**
+
+From then on every push to `main` redeploys on its own. The site is fully static, so photos keep
+coming from Supabase exactly as they do on Render -- nothing to configure there.
+
+If Vercel becomes the main address, update the `canonical` link in `index.html`, plus `robots.txt`
+and `sitemap.xml`, which still point at the onrender.com address.
+
 ## Deploying on Render
 
 The repo includes `render.yaml`, so Render can pick it up as a blueprint. Manual setup is just as
@@ -174,16 +193,19 @@ index.html              the public site — one page, sectioned
 staff.html              internal photo uploader (slider + before/after)
 supabase/
   willy-auto-upload/    edge function source (deployed to the Krypton project)
-404.html                not-found page
+404.html                not-found page (root-relative paths, so it works at any URL)
 render.yaml             Render blueprint (static site, no build)
+vercel.json             Vercel headers, font caching, clean URLs
+.vercelignore           files Vercel should not publish
 robots.txt / sitemap.xml
 assets/
   css/styles.css        design tokens + all styling
   css/staff.css         staff page only
-  js/main.js            menu, scroll effects, WhatsApp form handoff
+  fonts/                Space Grotesk + Plus Jakarta Sans (self-hosted, SIL OFL)
+  js/main.js            menu, reveals, slider, WhatsApp form handoff
+  js/motion.js          scroll progress, count-up stats, card light, background parallax
   js/config.js          photo storage endpoints + the workshop location
   js/services.js        the service list, shared with the staff page
-  js/main.js            also runs the homepage slider
   js/staff.js           passcode, photo resize, upload
   img/
     logo.svg            placeholder emblem on dark navy
@@ -198,7 +220,8 @@ scripts/
 
 The page is white from top to bottom -- sections are separated by hairline rules rather than
 coloured blocks. Blue carries the accents, near-black carries the type, and the only solid dark
-element is the logo plate.
+element is the logo plate. Behind the slider and intro, soft blue light drifts slowly across the
+white with a faint engineering grid; it is still a white page, just not a static one.
 
 | Token | Value | Used for |
 |---|---|---|
@@ -212,5 +235,24 @@ element is the logo plate.
 | Navy | `#0b1a33` | Logo plate, step numbers |
 | Green | `#12a150` | WhatsApp actions only |
 
-Type is **Inter** throughout -- a neo-grotesque, loaded as a variable font. Body is 16px, with
-15px for secondary copy and 13px for meta. Headings top out at 42px on desktop.
+### Type
+
+| Role | Font | Size |
+|---|---|---|
+| Headings, buttons, labels, figures | **Space Grotesk** | headline 40px desktop / 26px phone |
+| Body copy and forms | **Plus Jakarta Sans** | 15px desktop / 14px phone |
+
+Both are variable fonts served from `assets/fonts/` (about 50 KB together), so there is no request
+to Google Fonts. Form fields stay at 16px on phones on purpose: anything smaller makes iPhones zoom
+the page when a field is tapped.
+
+### Motion
+
+The slider photos ease in with a slow zoom and the dot under them doubles as a timer; the headline
+arrives word by word with a moving gradient on "perfection"; a services ticker scrolls under the
+intro; the stats count up the first time they are seen; cards rise into place in sequence and a
+soft light follows the pointer across them; the process line draws itself across the four steps;
+and a thin bar at the top tracks scroll position.
+
+All of it is decoration. Visitors whose device asks for reduced motion get a still page with
+everything visible, and with JavaScript off nothing is left hidden.

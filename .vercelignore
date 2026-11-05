@@ -1,0 +1,5 @@
+# Not part of the website — keep them off the public deployment.
+supabase/
+scripts/
+render.yaml
+README.md

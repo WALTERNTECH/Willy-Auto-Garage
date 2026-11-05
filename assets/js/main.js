@@ -61,6 +61,10 @@
 
   /* ---------- 4. Reveal on scroll ---------- */
   var reveals = $$('.reveal');
+  reveals.forEach(function (el) {
+    var siblings = $$(':scope > .reveal', el.parentElement);
+    el.style.setProperty('--i', String(Math.min(siblings.indexOf(el), 8)));
+  });
   if ('IntersectionObserver' in window && reveals.length) {
     var io = new IntersectionObserver(function (entries, obs) {
       entries.forEach(function (entry) {
@@ -101,6 +105,7 @@
       track.style.transform = 'translate3d(' + (-index * 100) + '%,0,0)';
       slides.forEach(function (slide, i) {
         slide.setAttribute('aria-hidden', String(i !== index));
+        slide.classList.toggle('is-active', i === index);
       });
       Array.prototype.forEach.call(dotsHost.children, function (dot, i) {
         dot.setAttribute('aria-selected', String(i === index));
@@ -108,11 +113,20 @@
       if (userDriven) restart();
     }
 
+    root.style.setProperty('--autoplay', autoplayMs + 'ms');
+
     function start() {
       if (reduceMotion || count() < 2 || timer) return;
+      root.classList.toggle('is-run', false);
+      void root.offsetWidth;                 // restart the dot's fill from zero
+      root.classList.toggle('is-run', true);
       timer = setInterval(function () { goTo(index + 1); }, autoplayMs);
     }
-    function stop() { clearInterval(timer); timer = null; }
+    function stop() {
+      clearInterval(timer);
+      timer = null;
+      root.classList.toggle('is-run', false);
+    }
     function restart() { stop(); start(); }
 
     // Safe to call more than once — it rebuilds from whatever slides survive.

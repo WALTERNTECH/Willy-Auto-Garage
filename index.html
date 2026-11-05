@@ -14,10 +14,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap">
+<link rel="preload" href="assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
 <script>
+document.documentElement.classList.add('js');
 /* Photos come from Supabase Storage. If one is not there yet, fall back to a
    copy committed in this repo, and only then show the empty placeholder. */
 function willyImgError(img){
@@ -137,6 +137,8 @@ function willyImgError(img){
 <symbol id="i-tiktok" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 2h-3.3v13.4a2.7 2.7 0 1 1-2.3-2.7v-3.3a6 6 0 1 0 5.6 6V8.9a7.3 7.3 0 0 0 4.3 1.4V7a4.3 4.3 0 0 1-4.3-4.3z"/></symbol>
 </svg>
 
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
 <a href="#main" class="sr-only">Skip to content</a>
 
 <!-- ============ TOP BAR ============ -->
@@ -193,6 +195,10 @@ function willyImgError(img){
 <main id="main">
 <span id="top"></span>
 
+<div class="stage">
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="gridlines" aria-hidden="true"></div>
+
 <!-- ============ PHOTO SLIDER ============ -->
 <section class="showcase" aria-label="Inside the workshop">
   <div class="container">
@@ -233,20 +239,18 @@ function willyImgError(img){
 <section class="hero" id="about">
   <div class="container hero__inner">
     <div class="hero__copy">
-      <h1>We bring crashed, faded and tired cars back to <em>perfection</em>.</h1>
+      <h1 class="headline"><span class="w" style="--w:0">We</span> <span class="w" style="--w:1">bring</span> <span class="w" style="--w:2">crashed,</span> <span class="w" style="--w:3">faded</span> <span class="w" style="--w:4">and</span> <span class="w" style="--w:5">tired</span> <span class="w" style="--w:6">cars</span> <span class="w" style="--w:7">back</span> <span class="w" style="--w:8">to</span> <span class="w" style="--w:9"><em>perfection</em>.</span></h1>
       <p class="hero__lead">
-        Willy Auto Perfection Centre is a full-service garage in Banana Hill, Kiambu &mdash; just outside
-        Nairobi. Panel beating, oven-baked spray
-        painting, mechanical repairs and dealer-level diagnostics &mdash; all under one roof, all finished to a
-        standard you can actually see.
+        A full-service garage in Banana Hill, just outside Nairobi. Panel beating, oven-baked spray
+        painting, mechanical repairs and diagnostics &mdash; all under one roof.
       </p>
       <div class="hero__actions">
         <a class="btn btn--wa btn--lg" href="https://wa.me/254710817390?text=Hello%20Willy%20Auto%20Perfection%20Centre%2C%20I%20would%20like%20to%20book%20my%20car%20in." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-whatsapp"></use></svg> Book on WhatsApp</a>
-        <a class="btn btn--ghost btn--lg" href="tel:+254710817390"><svg aria-hidden="true"><use href="#i-phone"></use></svg> +254 710 817390</a>
+        <a class="btn btn--ghost btn--lg" href="tel:+254710817390"><svg aria-hidden="true"><use href="#i-phone"></use></svg> Call us</a>
       </div>
       <ul class="hero__points">
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Free inspection &amp; written quote</li>
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Insurance work handled</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Free inspection</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Insurance work</li>
         <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Work guaranteed</li>
       </ul>
     </div>
@@ -266,7 +270,7 @@ function willyImgError(img){
           </div>
           <div class="field">
             <label for="qVehicle">Vehicle</label>
-            <input id="qVehicle" name="vehicle" type="text" placeholder="e.g. Toyota Prado 2015">
+            <input id="qVehicle" name="vehicle" type="text" placeholder="e.g. Prado 2015">
           </div>
         </div>
         <div class="field">
@@ -295,14 +299,46 @@ function willyImgError(img){
   </div>
 </section>
 
+</div><!-- /stage -->
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>Spray painting</span><i></i>
+    <span>Car buffing</span><i></i>
+    <span>Accident repair</span><i></i>
+    <span>Brake services</span><i></i>
+    <span>Diagnostics</span><i></i>
+    <span>Wheel alignment</span><i></i>
+    <span>Suspension &amp; steering</span><i></i>
+    <span>Air conditioning</span><i></i>
+    <span>Arc welding</span><i></i>
+    <span>Pre-purchase inspections</span><i></i>
+    <span>Routine maintenance</span><i></i>
+    <span>Car accessories</span><i></i>
+    <span>Spray painting</span><i></i>
+    <span>Car buffing</span><i></i>
+    <span>Accident repair</span><i></i>
+    <span>Brake services</span><i></i>
+    <span>Diagnostics</span><i></i>
+    <span>Wheel alignment</span><i></i>
+    <span>Suspension &amp; steering</span><i></i>
+    <span>Air conditioning</span><i></i>
+    <span>Arc welding</span><i></i>
+    <span>Pre-purchase inspections</span><i></i>
+    <span>Routine maintenance</span><i></i>
+    <span>Car accessories</span><i></i>
+  </div>
+</div>
+
 <!-- ============ STATS ============ -->
 <section class="stats" aria-label="Willy Auto at a glance">
   <div class="container">
     <div class="stats__grid">
-      <div class="stats__item"><div class="stats__num">10<span>+</span></div><div class="stats__label">Years on the tools</div></div>
-      <div class="stats__item"><div class="stats__num">2,500<span>+</span></div><div class="stats__label">Cars perfected</div></div>
-      <div class="stats__item"><div class="stats__num">11</div><div class="stats__label">Services under one roof</div></div>
-      <div class="stats__item"><div class="stats__num">4.9<span>/5</span></div><div class="stats__label">Customer rating</div></div>
+      <div class="stats__item"><div class="stats__num"><b data-count="10">10</b><span>+</span></div><div class="stats__label">Years on the tools</div></div>
+      <div class="stats__item"><div class="stats__num"><b data-count="2500">2,500</b><span>+</span></div><div class="stats__label">Cars perfected</div></div>
+      <div class="stats__item"><div class="stats__num"><b data-count="11">11</b></div><div class="stats__label">Services in-house</div></div>
+      <div class="stats__item"><div class="stats__num"><b data-count="4.9" data-decimals="1">4.9</b><span>/5</span></div><div class="stats__label">Customer rating</div></div>
     </div>
   </div>
 </section>
@@ -731,6 +767,7 @@ function willyImgError(img){
       <p>No queueing, no guesswork and no surprise invoice at the end.</p>
     </div>
     <div class="steps">
+      <div class="steps__line" aria-hidden="true"><span></span></div>
         <article class="step reveal">
           <div class="step__num">01</div>
           <h3>Tell us what is wrong</h3>
@@ -1073,5 +1110,6 @@ function willyImgError(img){
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/motion.js" defer></script>
 </body>
 </html>
